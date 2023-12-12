@@ -1,6 +1,6 @@
 ---
 - name: Install apache Tomcat10 on ubuntu
-  hosts: tomcat-hosts
+  hosts: ngnix-hosts
   become: true
 
   tasks:
