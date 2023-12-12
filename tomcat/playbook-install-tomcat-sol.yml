@@ -54,6 +54,7 @@
     - name: Settings user and password with blockinfile
       ansible.builtin.blockinfile:
         path: /opt/tomcat/apache-tomcat-10.0.0/conf/tomcat-users.xml
+        insertbefore: </tomcat-users>
         block: |
             <role rolename="manager-gui"/>
             <user username="admin" password="admin123" roles="manager-gui"/>
