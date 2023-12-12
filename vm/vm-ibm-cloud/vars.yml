@@ -1,0 +1,17 @@
+ibmcloud_resourcegroup : "Ansible AGI"
+ibmcloud_securitygroup_name: "ansible-sg"
+ibmcloud_region: "eu-de"
+zone: "eu-de-2"
+name_vsi: "ansiblevsi"
+ibmcloud_vpc_name: "vpc-ansible"
+ibmcloud_subnet_name: "subnetansible"
+address_prefix_sn: "10.0.1.0/24"
+ssh_key_name: "sshansible"
+key_data: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCQkI5Q3ZXxV72zzgbbYWnj5LlMV69Ty0TyA5/OTc+Yn+KlSBw+Ow4dIPgLNxroaKSU44ukOWMirzetV5924mAwcQ4j1lpL2IYWvlVK+XdD9n4fqCIF1bKOWxwfQ1kIBNKgjJXevGx38WgvzHOUgdltutV3jauf/XREFXD+l2gfymc9LdKi0/zdlS+j8yq07sifRHBRfn3PyudnPRAqYm01pQspeZegciCRWGY/lkFxdPFlcBIqTZfkxMxcz5DOkRsrokd0WgBjYqGxMH0lI21/ctwkClftPHmbcahxGYn+P6Pw1Up5rt6/5/YD0PH84NyfkVjShEe1Ct9DcbN3QyTy6UQ3GUPp1J/AzA8WwPmQLyQuoI8wSmxYam3PtCY2vaivl7p7bv/KfLRKzyW5zjeedcvknv00P/mXgoijUEIKRAqeqJiNceW7buNGxx+gPE3bzHU2rd9Y95buHrdhs+vIzRFxlx8b0XdQB7LzkEogkHTRrPK6vJuWMWtoocsJsnJ+TWddW0gSnAnFRSA2HsWSdrMsXvfCacgHVrKSu0c827H3sh7aVDJbMt+Neh60ccDiPRURFMU01pgovmWUkC5MwYS9NOuxQb+vuNfBFXIs+UUaWuTuC6ISn0p+wd0pzgjzp7eePUkP54Q7tC2AWAu+NjAyrSdfq/Hy4Y+cwClmvQ=="
+vsi_image: ibm-debian-11-2-minimal-amd64-1
+vsi_profile: bx2-2x8
+name_fip: "ipansible"
+total_ipv4_address_count: 256
+path_inventory: "/opt/inventory.ini"
+path_ssh: "/opt/root_priv"
+admin_username: "root"

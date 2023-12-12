@@ -1,0 +1,118 @@
+---
+- name: Create Virtual service instance on IBMCLoud
+  hosts: localhost
+  connection: local
+  vars_files:
+     - vars.yml
+  become: true
+
+  tasks:
+    - name: Create resource group on IBMCloud
+      ibm.cloudcollection.ibm_resource_group:
+        name: "{{ ibmcloud_resourcegroup }}"
+      register: rg_info
+
+    - name: Print the info resource group
+      ansible.builtin.debug:
+        msg: "{{ rg_info.resource.id }}"
+
+
+    - name: Configure VPC on IBM cloud
+      ibm.cloudcollection.ibm_is_vpc:
+        name: "{{ ibmcloud_vpc_name }}"
+        resource_group: "{{ rg_info.resource.id }}"
+        region: "{{ ibmcloud_region }}"
+      register: vpc_info
+
+    - name: Print the info vpc
+      ansible.builtin.debug:
+        msg: "{{ vpc_info.resource.id }}"
+
+    - name: Configure VPC subnet
+      ibm.cloudcollection.ibm_is_subnet:
+        name: "{{ ibmcloud_subnet_name }}"
+        state: available
+        id: "{{ subnet.id | default(omit) }}"
+        vpc: "{{ vpc_info.resource.id }}"
+        region: "{{ ibmcloud_region }}"
+        total_ipv4_address_count: "{{ total_ipv4_address_count }}"
+        zone: "{{ zone }}"
+        resource_group: "{{ rg_info.resource.id }}"
+      register: subnet_info
+
+    - name: Configure SSH Key
+      ibm.cloudcollection.ibm_is_ssh_key:
+        name: "{{ ssh_key_name }}"
+        resource_group: "{{ rg_info.resource.id }}"
+        public_key: "{{ key_data }}"
+      register: ssh_key_info
+
+    - name: Retrieve Image List
+      ibm.cloudcollection.ibm_is_images_info:
+      register: images_list
+
+    - name: Set VM image name/id dictionary fact
+      ansible.builtin.set_fact:
+        image_dict: "{{ images_list.resource.images |
+                            items2dict(key_name='name', value_name='id') }}"
+
+    - name: Configure VSI on IBMCloud
+      ibm.cloudcollection.ibm_is_instance:
+        name: "{{ name_vm }}"
+        state: available
+        id: "{{ vsi.resource.id | default(omit) }}"
+        vpc: "{{ vpc_info.resource.id }}"
+        profile: "{{ vsi_profile }}"
+        image: "{{ image_dict[vsi_image] }}"
+        keys:
+          - "{{ ssh_key_info.resource.id }}"
+        primary_network_interface:
+          - subnet: "{{ subnet_info.resource.id }}"
+        zone: "{{ zone }}"
+      register: vsi
+
+    - name: Print VSI info
+      ansible.builtin.debug:
+        msg: "{{ vsi }}"
+
+    - name: Configure Floating ip Address
+      ibm.cloudcollection.ibm_is_floating_ip:
+        resource_group: "{{ rg_info.resource.id }}"
+        target: "{{ vsi.resource.primary_network_interface[0]['id'] }}"
+        name: "{{ name_fip }}"
+        state: available
+      register: fip
+
+    - name: Print info Floating  Ip Address
+      ansible.builtin.debug:
+        msg: "{{ fip.resource.address }}"
+
+    - name: Configure Security Group Rule to open SSH on the VSI
+      ibm.cloudcollection.ibm_is_security_group_rule:
+        state: available
+        group: "{{ vpc_info.resource.default_security_group }}"
+        direction: inbound
+        remote: 0.0.0.0/0
+        tcp:
+          - port_max: 22
+            port_min: 22
+    - name: Configure Security Group rule to open port 80
+      ibm.cloudcollection.ibm_is_security_group_rule:
+        state: available
+        group: "{{ vpc_info.resource.default_security_group }}"
+        direction: inbound
+        ip_version: "ipv4"
+        tcp:
+          - port_max: 80
+            port_min: 80
+
+    - name: Save into inventory the VSI
+      ansible.builtin.add_host:
+        name: "{{ fip.resource.address }}"
+
+    - name: Add virtual machine into inventory file with lineinfile
+      ansible.builtin.lineinfile:
+        path: "{{ path_inventory }}"
+        line: "vm_ibmcloud ansible_host={{ fip.resource.address }} ansible_ssh_user={{ admin_username }} ansible_ssh_private_key_file={{ path_ssh }}"
+        insertafter: EOF
+      delegate_to: apache
