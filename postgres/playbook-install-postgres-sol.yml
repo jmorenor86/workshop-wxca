@@ -23,6 +23,14 @@
         backup: true
       notify: Restart postgresql
 
+    - name: Allow PostgreSQL to listen on a specific port with lineinfile
+      ansible.builtin.lineinfile:
+        path: /etc/postgresql/12/main/postgresql.conf
+        regexp: ^
+        line: port = 5432
+        state: present
+      notify: Restart postgresql
+
     - name: Create postgreSQL user, password and database
       community.postgresql.postgresql_user:
         name: "admin"
@@ -31,7 +39,7 @@
         state: present
       become: true
       become_user: postgres
-    
+
     
 
   handlers:
