@@ -106,6 +106,17 @@
           - port_max: 80
             port_min: 80
 
+    - name: Configure Security group rule to open port 8080
+      ibm.cloudcollection.ibm_is_security_group_rule:
+        state: available
+        group: "{{ vpc_info.resource.default_security_group }}"
+        direction: inbound
+        ip_version: ipv4
+        tcp:
+          - port_max: 8080
+            port_min: 8080
+
+
     - name: Save into inventory the VSI
       ansible.builtin.add_host:
         name: "{{ fip.resource.address }}"
