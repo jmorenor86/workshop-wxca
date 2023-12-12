@@ -1,0 +1,7 @@
+---
+- name: Deploy Nginx with Hello, World!
+  hosts: ngnix-hosts
+  become: true
+
+  tasks:
+    - name: 
