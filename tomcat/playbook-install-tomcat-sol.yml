@@ -51,8 +51,9 @@
         group: tomcat
         recurse: true
 
-    - name: Start and Enable Tomcat 10 on server
-      ansible.builtin.service:
-        name: tomcat
+    - name: Start and Enable Tomcat service 
+      ansible.builtin.systemd:
+        name: tomcat10
         state: started
         enabled: true
+    
