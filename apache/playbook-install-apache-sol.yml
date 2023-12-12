@@ -26,3 +26,10 @@
       line: Listen 90
       insertafter: EOF
       state: present
+    notify: restart apache
+
+  handlers:
+    - name: restart apache
+      systemd:
+        name: apache2
+        state: restarted
