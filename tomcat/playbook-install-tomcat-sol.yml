@@ -62,7 +62,7 @@
 
     - name: Debug - display tomcat-users.xml
       ansible.builtin.debug:
-        msg: "\"{{ lookup('file', 'opt/tomcat/apache-tomcat-10.0.0/conf/tomcat-users.xml') }}\""
+        msg: "\"{{ lookup('file', '/opt/tomcat/apache-tomcat-10.0.0/conf/tomcat-users.xml') }}\""
     
 
     - name: Settings service tomcat10 SystemD
