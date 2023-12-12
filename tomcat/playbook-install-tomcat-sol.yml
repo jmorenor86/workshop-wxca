@@ -51,13 +51,12 @@
         group: tomcat
         recurse: true
 
-    - name: Change tomcat port
-      community.general.xml:
+    - name: Change tomcat port with lineinfie
+      ansible.builtin.lineinfile:
         path: /opt/tomcat/apache-tomcat-10.0.0/conf/server.xml
-        xpath: /Server/Service/Connector
-        attribute: port
-        value: '9090'
-        pretty_print: true
+        regexp: ^8080
+        line: '9090'
+    
     
 
     - name: Settings service tomcat10 SystemD
