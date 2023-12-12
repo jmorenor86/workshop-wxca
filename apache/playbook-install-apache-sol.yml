@@ -23,7 +23,8 @@
   - name: Update settings port file of apache with lineinfile
     ansible.builtin.lineinfile:
       path: /etc/apache2/ports.conf
-      line: Listen 90
+      regexp: '^Listen '
+      line: 'Listen 90'
       state: present
     notify: restart apache
 
