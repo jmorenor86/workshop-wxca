@@ -53,7 +53,7 @@
 
     - name: Start and Enable Tomcat service 
       ansible.builtin.systemd:
-        name: tomcat10
+        name: tomcat
         state: started
         enabled: true
     
