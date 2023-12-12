@@ -2,6 +2,8 @@
 - name: Install postgres on ubuntu
   hosts: ngnix-hosts
   become: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
 
   tasks:
     - name: Update apt package cache
