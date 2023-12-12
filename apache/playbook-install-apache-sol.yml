@@ -1,6 +1,6 @@
 ---
 - name: Install apache on ubuntu
-  hosts: ngnix-hosts
+  hosts: apache-hosts
   become: true
 
   tasks:
@@ -9,27 +9,8 @@
       update_cache: true
       cache_valid_time: 3600
 
-  - name: Open port 90 in hosts
-    community.general.ufw:
-      rule: allow
-      port: '90'
-      proto: tcp
 
   - name: Install apache
     ansible.builtin.package:
       name: apache2
       state: present
-
-  - name: Update settings port file of apache with lineinfile
-    ansible.builtin.lineinfile:
-      path: /etc/apache2/ports.conf
-      regexp: '^Listen '
-      line: 'Listen 90'
-      state: present
-    notify: restart apache
-
-  handlers:
-    - name: restart apache
-      systemd:
-        name: apache2
-        state: restarted
