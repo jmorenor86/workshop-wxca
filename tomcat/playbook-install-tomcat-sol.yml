@@ -54,8 +54,8 @@
     - name: Change tomcat port with lineinfie
       ansible.builtin.lineinfile:
         path: /opt/tomcat/apache-tomcat-10.0.0/conf/server.xml
-        regexp: ^8080
-        line: '9090'
+        regexp: ^8081
+        line: '8081'
     
     
 
