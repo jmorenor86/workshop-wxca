@@ -51,12 +51,18 @@
         group: tomcat
         recurse: true
 
-    - name: Change tomcat port with lineinfie
-      ansible.builtin.lineinfile:
-        path: /opt/tomcat/apache-tomcat-10.0.0/conf/server.xml
-        regexp: ^8081
-        line: '8081'
-    
+    - name: Settings user and password with blockinfile
+      ansible.builtin.blockinfile:
+        path: /opt/tomcat/apache-tomcat-10.0.0/conf/tomcat-users.xml
+        insertbefore: </tomcat-users>
+        block: |
+          <tomcat-users>
+            <role rolename="manager-gui"/>
+            <user username="admin" password="admin123" roles="manager-gui"/>
+          </tomcat-users>
+      notify: Restart tomcat
+
+
     - name: Settings service tomcat10 SystemD
       ansible.builtin.template:
         src: templates/tomcat.service.j2
