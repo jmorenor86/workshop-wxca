@@ -1,0 +1,7 @@
+---
+- name: Install apache on ubuntu
+  hosts: apache-hosts
+  become: true
+
+  tasks:
+  - name: 

@@ -1,0 +1,41 @@
+---
+- name: Install postgres on ubuntu
+  hosts: ngnix-hosts
+  become: true
+
+  tasks:
+    - name: Update apt package cache
+      ansible.builtin.apt:
+        update_cache: true
+      become: true
+    
+    - name: Install postgreSQL
+      ansible.builtin.package:
+        name: postgresql
+        state: present
+    
+    - name: Allow remote access to PostgreSQL with lineinfile
+      ansible.builtin.lineinfile:
+        path: /etc/postgresql/12/main/postgresql.conf
+        regexp: ^
+        line: listen_addresses = '*'
+        state: present
+        backup: true
+      notify: Restart postgresql
+
+    - name: Create postgreSQL user, password and database
+      community.postgresql.postgresql_user:
+        name: "admin"
+        password: "admin123"
+        db: "test"
+        state: present
+      become: true
+      become_user: postgres
+    
+    
+
+  handlers:
+    - name: Restart postgresql
+      service:
+        name: postgresql
+        state: restarted
