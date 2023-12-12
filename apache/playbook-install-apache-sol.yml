@@ -1,0 +1,28 @@
+---
+- name: Install apache on ubuntu
+  hosts: ngnix-hosts
+  become: true
+
+  tasks:
+  - name: Update Packages on ubuntu
+    ansible.builtin.apt:
+      update_cache: true
+      cache_valid_time: 3600
+
+  - name: Open port 90 in hosts
+    community.general.ufw:
+      rule: allow
+      port: '90'
+      proto: tcp
+
+  - name: Install apache
+    ansible.builtin.package:
+      name: apache2
+      state: present
+
+  - name: Update settings port file of apache with lineinfile
+    ansible.builtin.lineinfile:
+      path: /etc/apache2/ports.conf
+      line: Listen 90
+      insertafter: EOF
+      state: present

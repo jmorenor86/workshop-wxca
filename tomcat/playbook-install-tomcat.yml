@@ -1,0 +1,4 @@
+---
+- name: Install apache Tomcat10 on ubuntu
+  hosts: ngnix-hosts
+  become: true
