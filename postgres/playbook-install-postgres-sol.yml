@@ -16,7 +16,7 @@
     
     - name: Allow remote access to PostgreSQL with lineinfile
       ansible.builtin.lineinfile:
-        path: /etc/postgresql/12/main/postgresql.conf
+        path: /etc/postgresql/14/main/postgresql.conf
         regexp: ^
         line: listen_addresses = '*'
         state: present
@@ -25,7 +25,7 @@
 
     - name: Allow PostgreSQL to listen on a specific port with lineinfile
       ansible.builtin.lineinfile:
-        path: /etc/postgresql/12/main/postgresql.conf
+        path: /etc/postgresql/14/main/postgresql.conf
         regexp: ^
         line: port = 5432
         state: present
