@@ -9,7 +9,7 @@
       ansible.builtin.apt:
         update_cache: true
         cache_valid_time: 3600
-    
+
     - name: Install Nginx
       ansible.builtin.package:
         name: nginx
@@ -17,14 +17,14 @@
 
     - name: Create directory to website
       ansible.builtin.file:
-        path: /var/www/hello
+        path: /var/www/html
         state: directory
         mode: '0755'
 
     - name: Create file html with hello World
       ansible.builtin.copy:
         content: Hello World!
-        dest: /var/www/hello/index.html
+        dest: /var/www/html/index.html
         mode: '0755'
 
     - name: Restart Nginx
