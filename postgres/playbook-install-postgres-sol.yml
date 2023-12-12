@@ -33,14 +33,10 @@
 
     - name: Create postgreSQL user, password and database
       community.postgresql.postgresql_user:
-        name: "admin"
-        password: "admin123"
-        db: "test"
-        state: present
-      become: true
-      become_user: postgres
-
-    
+        db: your_database_name
+        name: your_username
+        password: your_password
+        priv: "*.*:ALL"    
 
   handlers:
     - name: Restart postgresql
