@@ -24,7 +24,6 @@
     ansible.builtin.lineinfile:
       path: /etc/apache2/ports.conf
       line: Listen 90
-      insertafter: EOF
       state: present
     notify: restart apache
 
