@@ -57,15 +57,12 @@
         regexp: ^8081
         line: '8081'
     
-    
-
     - name: Settings service tomcat10 SystemD
       ansible.builtin.template:
         src: templates/tomcat.service.j2
         dest: /etc/systemd/system/tomcat.service
         mode: '0644'
       notify: Restart tomcat
-    
 
     - name: Start and enabled tomcat service
       ansible.builtin.systemd:
