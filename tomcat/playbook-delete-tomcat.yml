@@ -1,7 +1,0 @@
----
-- name: Delete apache Tomcat10 on ubuntu
-  hosts: ngnix-hosts
-  become: true
-
-  tasks: 
-    - name: 

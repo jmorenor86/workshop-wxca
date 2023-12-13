@@ -1,0 +1,140 @@
+---
+- name: Create Virtual service instance on Azure
+  hosts: localhost
+  connection: local
+  vars_files:
+     - vars.yml
+  become: true
+
+  tasks:
+    - name: Create resource Group on azure
+      azure.azcollection.azure_rm_resourcegroup:
+        name: "{{ resource_group }}"
+        location: "{{ location }}"
+        tags:
+          testing: testing
+          delete: never
+      register: output_rg
+
+    - name: Print resource Group info
+      ansible.builtin.debug:
+        var: output_rg
+
+    - name: Create Virtual network on Azure
+      azure.azcollection.azure_rm_virtualnetwork:
+        name: "{{ name_vn }}"
+        address_prefixes_cidr: "{{ address_prefix_vn }}"
+        resource_group: "{{ resource_group }}"
+      register: output_vn
+
+    - name: Print info virtual network
+      ansible.builtin.debug:
+        var: output_vn
+
+    - name: Create subnet
+      azure.azcollection.azure_rm_subnet:
+        name: "{{ name_subnet }}"
+        virtual_network_name: "{{ name_vn }}"
+        resource_group: "{{ resource_group }}"
+        address_prefix_cidr: "{{ address_prefix_sn }}"
+      register: output_sn
+
+    - name: Print subnet info
+      ansible.builtin.debug:
+        var: output_sn
+
+
+    - name: Create public IP address
+      azure.azcollection.azure_rm_publicipaddress:
+        resource_group: "{{ resource_group }}"
+        allocation_method: Static
+        name: "{{ name_ip_public }}"
+      register: output_pub
+
+    - name: Print ip public info
+      ansible.builtin.debug:
+        var: output_pub
+
+
+    - name: Create Network security group that allow ssh and port 80
+      azure.azcollection.azure_rm_securitygroup:
+        name: "{{ name_ip_public }}"
+        resource_group: "{{ resource_group }}"
+        rules:
+          - name: SSH
+            protocol: Tcp
+            destination_port_range: 22
+            access: Allow
+            priority: 1001
+            direction: Inbound
+          - name: HTTP
+            protocol: Tcp
+            destination_port_range: 80
+            access: Allow
+            priority: 1002
+            direction: Inbound
+      register: output_sg_ssh
+
+
+    - name: Create virtual network interface card
+      azure.azcollection.azure_rm_networkinterface:
+        name: "{{ name_vnic }}"
+        resource_group: "{{ resource_group }}"
+        virtual_network: "{{ name_vn }}"
+        subnet: "{{ name_subnet }}"
+        public_ip_name: "{{ name_ip_public }}"
+        security_group: "{{ name_security_group }}"
+      register: output_nic_name
+
+    - name: Create Storage account
+      azure.azcollection.azure_rm_storageaccount:
+        resource_group: "{{ resource_group }}"
+        name: "{{ name_storage }}"
+        type: Standard_LRS
+
+    - name: Generate ssh keys and save into folder=files
+      community.crypto.openssh_keypair:
+        path: "{{ path }}"
+        type: rsa
+        size: 4096
+        state: present
+        force: false
+
+    - name: Read the public key generated
+      ansible.builtin.command: cat "{{ path }}.pub"
+      register: public_key
+
+    - name: Print public_key
+      ansible.builtin.debug:
+        msg: "{{ public_key.stdout }}"
+
+
+    - name: Create VM
+      azure.azcollection.azure_rm_virtualmachine:
+        resource_group: "{{ resource_group }}"
+        name: "{{ name_subnet }}"
+        vm_size: Standard_DS1_v2
+        admin_username: "{{ admin_username }}"
+        ssh_password_enabled: false
+        ssh_public_keys:
+          - path: /home/azureuser/.ssh/authorized_keys
+            key_data: "{{ key_data }}"
+        network_interfaces: "{{ name_vnic }}"
+        image:
+          offer: UbuntuServer
+          publisher: Canonical
+          sku: 16.04-LTS
+          version: latest
+      register: output_vm
+
+    - name: Print info VM
+      ansible.builtin.debug:
+        var: output_vm
+
+    - name: Add virtul machine into inventory file with lineinfile
+      ansible.builtin.lineinfile:
+        path: "{{ path_inventory }}"
+        line: "vm_azure ansible_host={{ output_pub.state.ip_address }} ansible_ssh_user={{ admin_username }} ansible_ssh_private_key_file={{ path_ssh }}"
+        insertafter: EOF
+      delegate_to: apache
+   

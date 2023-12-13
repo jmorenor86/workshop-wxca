@@ -1,1 +1,6 @@
 .vscode/*
+apache/playbook-install-apache-sol.yml
+nginx/playbook-install-nginx-sol.yml
+tomcat/playbook-delete-tomcat-sol.yml
+tomcat/playbook-install-tomcat-sol.yml
+ssh.ignore

@@ -2,3 +2,70 @@
 - name: Install apache Tomcat10 on ubuntu
   hosts: ngnix-hosts
   become: true
+
+  tasks:
+    - name: Update the System packages
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+    
+    - name: Create a system tomcat user
+      ansible.builtin.user:
+        name: tomcat
+        system: true
+        state: present
+    
+    - name: Create a system tomcat Group
+      ansible.builtin.group:
+        name: tomcat
+        system: true
+        state: present
+    
+    - name: Install JAVA
+      ansible.builtin.package:
+        name: default-jdk
+        state: present
+    
+    - name: Create a tomcat directory with owner=tomcat and group=tomcat
+      ansible.builtin.file:
+        path: /opt/tomcat
+        state: directory
+        owner: tomcat
+        group: tomcat
+        recurse: true
+    
+    - name: Download & unarchive Tomcat10.0.0
+      ansible.builtin.unarchive:
+        src: 
+          https://archive.apache.org/dist/tomcat/tomcat-10/v10.0.0/bin/apache-tomcat-10.0.0.tar.gz
+        dest: /opt/tomcat
+        remote_src: true
+        group: tomcat
+        owner: tomcat
+        unsafe_writes: true
+    
+    - name: Change ownership of tomcat directory
+      ansible.builtin.file:
+        path: /opt/tomcat/tomcat-10.0.0
+        state: directory
+        recurse: true
+        owner: tomcat
+        group: tomcat
+    
+    - name: Settings service tomcat10 SystemD
+      ansible.builtin.template:
+        src: templates/tomcat.service.j2
+        dest: /etc/systemd/system/tomcat.service
+        mode: '0644'
+    
+    - name: Settings user and password on tomcat with blockinfile
+      ansible.builtin.blockinfile:
+        path: /opt/tomcat/conf/tomcat-users.xml
+
+    
+    - name: Start and enabled tomcat service
+      ansible.builtin.systemd:
+        name: tomcat.service
+        state: started
+        enabled: true
+    
