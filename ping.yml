@@ -1,6 +1,6 @@
 ---
 - name: Test Connection
-  hosts: vm_ibmcloud-group1
+  hosts: vm_ibmcloud-group*
   tasks:
     - name: Verify the conectivity
       ansible.builtin.ping:
