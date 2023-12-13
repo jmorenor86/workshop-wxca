@@ -4,32 +4,4 @@
   become: true
 
   tasks:
-    - name: Update apt
-      ansible.builtin.apt:
-        update_cache: true
-        cache_valid_time: 3600
-
-    - name: Install nginx
-      ansible.builtin.package:
-        name: nginx
-        state: present
-    
-    - name: Create directory to website
-      ansible.builtin.file:
-        path: /var/www/html
-        state: directory
-        mode: '0755'
-
-    - name: Create file html into directory=html with hello world
-      ansible.builtin.copy:
-        content: Hello World
-        dest: /var/www/html/index.html
-        owner: root
-        group: root
-        mode: '0755'
-    
-    - name: Restart nginx
-      ansible.builtin.service:
-        name: nginx
-        state: restarted
-    
+    - name: 
