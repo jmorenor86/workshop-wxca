@@ -112,7 +112,7 @@
         image:
           offer: UbuntuServer
           publisher: Canonical
-          sku: 20_04-lts
+          sku: 16.04-LTS
           version: latest
       register: output_vm
 
