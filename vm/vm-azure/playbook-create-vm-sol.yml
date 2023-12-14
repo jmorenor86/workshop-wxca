@@ -110,9 +110,9 @@
             key_data: "{{ key_data }}"
         network_interfaces: "{{ name_vnic }}"
         image:
-          offer: UbuntuServer
+          offer: 0001-com-ubuntu-server-jammy
           publisher: Canonical
-          sku: 20.04-LTS
+          sku: 22_04-lts-gen2
           version: latest
       register: output_vm
 
