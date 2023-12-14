@@ -17,6 +17,4 @@
           - python3-distupgrade
 
     - name: Install distribution Ubuntu 22.04
-      ansible.builtin.apt:
-        deb: http://nginx.org/packages/ubuntu/jammy/ubuntu-22.04-server-amd64.deb
-        state: present
+      command: do-release-upgrade -f DistUpgradeViewNonInteractivent
