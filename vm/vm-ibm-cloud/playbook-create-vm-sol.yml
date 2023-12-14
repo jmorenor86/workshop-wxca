@@ -124,6 +124,6 @@
     - name: Add virtual machine into inventory file with lineinfile
       ansible.builtin.lineinfile:
         path: "{{ path_inventory }}"
-        line: "vm_ibmcloud ansible_host={{ fip.resource.address }} ansible_ssh_user={{ admin_username }} ansible_ssh_private_key_file={{ path_ssh }}"
+        line: "vm_ibmcloud-{{name_vm}} ansible_host={{ fip.resource.address }} ansible_ssh_user={{ admin_username }} ansible_ssh_private_key_file={{ path_ssh }}"
         insertafter: EOF
       delegate_to: apache
