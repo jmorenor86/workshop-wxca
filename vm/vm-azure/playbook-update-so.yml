@@ -1,6 +1,6 @@
 ---
 - name: Upgrade Ubuntu Server 16.x to 22.04
-  hosts: tu_servidor
+  hosts: vm_azure-grupo6
   become: true
 
   tasks:
