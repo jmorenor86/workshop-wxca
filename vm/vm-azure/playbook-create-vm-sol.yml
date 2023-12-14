@@ -102,7 +102,7 @@
       azure.azcollection.azure_rm_virtualmachine:
         resource_group: "{{ resource_group }}"
         name: "{{ name_subnet }}"
-        vm_size: Standard_DS1_v2
+        vm_size: StandardSSD_LRS
         admin_username: "{{ admin_username }}"
         ssh_password_enabled: false
         ssh_public_keys:
