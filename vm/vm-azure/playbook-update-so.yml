@@ -8,9 +8,7 @@
       ansible.builtin.apt:
         update_cache: true
         force_apt_get: true
-      cache_valid_time: 3600
     
-
     - name: Install need tools for update apt name=python3
       ansible.builtin.apt:
         name:
