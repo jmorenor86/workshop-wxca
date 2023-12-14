@@ -110,10 +110,13 @@
             key_data: "{{ key_data }}"
         network_interfaces: "{{ name_vnic }}"
         image:
-          offer: 0001-com-ubuntu-server-jammy
+          offer: UbuntuServer
           publisher: Canonical
           sku: 22_04-lts-gen2
           version: latest
+        os_disk_caching: ReadWrite
+        os_disk_create_option: FromImage
+        os_disk_storage_account_type: Standard_LRS
       register: output_vm
 
     - name: Print info VM
