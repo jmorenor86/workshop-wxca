@@ -1,0 +1,24 @@
+---
+- name: Upgrade Ubuntu Server 16.x to 22.04
+  hosts: tu_servidor
+  become: true
+
+  tasks:
+    - name: Update apt
+      ansible.builtin.apt:
+        update_cache: true
+        force_apt_get: true
+      cache_valid_time: 3600
+    
+
+    - name: Install need tools for update apt name=python3
+      ansible.builtin.apt:
+        name:
+          - python3
+          - python3-apt
+          - python3-distupgrade
+
+    - name: Install distribution Ubuntu 22.04
+      ansible.builtin.apt:
+        deb: http://nginx.org/packages/ubuntu/jammy/ubuntu-22.04-server-amd64.deb
+        state: present
