@@ -6,6 +6,7 @@
   tasks:
     - name: Update apt
       ansible.builtin.apt:
+        upgrade: dist
         update_cache: true
         force_apt_get: true
     
